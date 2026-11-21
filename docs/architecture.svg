@@ -1,71 +1,118 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="740" viewBox="0 0 1280 740" role="img" aria-labelledby="title desc">
-<title id="title">ShopLedger architecture and checkout flow</title>
-<desc id="desc">An order travels from the browser through Express to the order router, which coordinates pricing, credit, inventory, and persistence. Printing and audit use a separate invoice calculation.</desc>
-<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#25716a"/></marker></defs>
-<style>text{font-family:Arial,sans-serif;fill:#172f38}.title{font-size:36px;font-weight:700}.head{font-size:23px;font-weight:700}.body{font-size:18px}.minor{font-size:16px;fill:#425b65}.section{font-size:16px;letter-spacing:1.4px;fill:#21675f;font-weight:700}</style>
-<rect width="1280" height="740" fill="#f6f8f6"/>
-<text x="36" y="55" class="title">ShopLedger architecture</text>
-<text x="36" y="99" class="section">PLACE AN ORDER   /   POST /api/orders</text>
-<rect x="36" y="120" width="235" height="110" rx="12" fill="#fff" stroke="#a4bbb5"/>
-<text x="52" y="152" class="head">Browser UI</text>
-<text x="52" y="181" class="minor">public/index.html</text>
-<text x="52" y="205" class="minor">public/js/app.js sends cart</text>
-<rect x="312" y="120" width="208" height="110" rx="12" fill="#fff" stroke="#a4bbb5"/>
-<text x="328" y="152" class="head">server.js</text>
-<text x="328" y="181" class="minor">Serves public/</text>
-<text x="328" y="205" class="minor">Mounts routers at /api</text>
-<rect x="560" y="120" width="330" height="110" rx="12" fill="#e0f1e9" stroke="#a4bbb5"/>
-<text x="576" y="152" class="head">routes/orders.js</text>
-<text x="576" y="181" class="minor">Reads database and checks cart</text>
-<text x="576" y="205" class="minor">Coordinates checkout steps below</text>
-<rect x="930" y="120" width="314" height="110" rx="12" fill="#fff" stroke="#a4bbb5"/>
-<text x="946" y="152" class="head">lib/store.js</text>
-<text x="946" y="181" class="minor">Appends audit entry and writes</text>
-<text x="946" y="205" class="minor">data/db.json · returns to router</text>
-<path d="M271 175 L310 175" stroke="#25716a" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
-<path d="M520 175 L558 175" stroke="#25716a" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
-<path d="M890 175 L928 175" stroke="#25716a" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
-<text x="36" y="281" class="section">CHECKOUT STEPS INSIDE THE ORDER ROUTER</text>
-<rect x="36" y="300" width="272" height="119" rx="12" fill="#fff" stroke="#a4bbb5"/>
-<text x="52" y="332" class="head">1   Validate</text>
-<text x="52" y="361" class="minor">lib/inventory.js checks stock</text>
-<text x="52" y="385" class="minor">lib/coupons.js validates code</text>
-<rect x="343" y="300" width="285" height="119" rx="12" fill="#fff" stroke="#a4bbb5"/>
-<text x="359" y="332" class="head">2   Price</text>
-<text x="359" y="361" class="minor">lib/pricing.js applies discount</text>
-<text x="359" y="385" class="minor">lib/tax.js resolves item GST</text>
-<rect x="663" y="300" width="255" height="119" rx="12" fill="#fff" stroke="#a4bbb5"/>
-<text x="679" y="332" class="head">3   Charge Khata</text>
-<text x="679" y="361" class="minor">lib/ledger.js checks credit</text>
-<text x="679" y="385" class="minor">and records a credit sale</text>
-<rect x="953" y="300" width="291" height="119" rx="12" fill="#fff" stroke="#a4bbb5"/>
-<text x="969" y="332" class="head">4   Record sale</text>
-<text x="969" y="361" class="minor">lib/inventory.js deducts stock</text>
-<text x="969" y="385" class="minor">lib/orders.js adds dated order</text>
-<path d="M308 360 L341 360" stroke="#25716a" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
-<path d="M628 360 L661 360" stroke="#25716a" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
-<path d="M918 360 L951 360" stroke="#25716a" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
-<text x="36" y="450" class="body">Step 3 applies to Khata sales only. After step 4, the router saves via lib/store.js and returns HTTP 201 with the order.</text>
-<text x="36" y="510" class="section">OTHER REQUEST PATHS</text>
-<text x="817" y="510" class="section">SHARED MODULES AND DATA</text>
-<text x="36" y="550" class="body">routes/products.js</text>
-<text x="260" y="550" class="minor">Catalog, stock and coupons</text>
-<path d="M36 563H772" stroke="#d2dfdb"/>
-<text x="36" y="593" class="body">routes/customers.js</text>
-<text x="260" y="593" class="minor">Khata accounts and settlements</text>
-<path d="M36 606H772" stroke="#d2dfdb"/>
-<text x="36" y="636" class="body">routes/reports.js</text>
-<text x="260" y="636" class="minor">Cart preview, dashboard and GST audit</text>
-<path d="M36 649H772" stroke="#d2dfdb"/>
-<text x="36" y="679" class="body">GET /orders/:id/invoice</text>
-<text x="260" y="679" class="minor">server.js loads the order and calls lib/invoice.js</text>
-<path d="M36 692H772" stroke="#d2dfdb"/>
-<text x="817" y="543" class="body">config.js</text>
-<text x="817" y="563" class="minor">Tax slabs, coupons and shop settings</text>
-<text x="817" y="591" class="body">lib/dates.js</text>
-<text x="817" y="611" class="minor">Dates for orders and ledger entries</text>
-<text x="817" y="639" class="body">lib/reports.js</text>
-<text x="817" y="659" class="minor">Compares invoice and saved order figures</text>
-<text x="817" y="687" class="body">data/db.json</text>
-<text x="817" y="707" class="minor">Products, orders, accounts and audit log</text>
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="1080" viewBox="0 0 1440 1080" role="img" aria-labelledby="title"><title id="title">ShopLedger architecture and order flow</title>
+<rect x="0" y="0" width="1440" height="1080" rx="0" fill="#f9faf6" stroke="none"/>
+<rect x="0" y="0" width="1440" height="130" rx="0" fill="#102e32" stroke="none"/>
+<text x="44" y="62" font-family="Arial,sans-serif" font-size="50" font-weight="700" fill="#ffffff" letter-spacing="-2">ShopLedger</text>
+<text x="329" y="61" font-family="Arial,sans-serif" font-size="40" font-weight="400" fill="#abf4c7" letter-spacing="-1">Architecture &amp; order flow</text>
+<text x="46" y="100" font-family="Arial,sans-serif" font-size="21" font-weight="400" fill="#d7e9e6" letter-spacing="0">A sale travels from the browser to a saved bill. The same pricing rules power the printed GST invoice.</text>
+<rect x="32" y="148" width="1376" height="135" rx="17" fill="#e5efed" stroke="none"/>
+<text x="54" y="180" font-family="Arial,sans-serif" font-size="15" font-weight="700" fill="#235d58" letter-spacing="1.4">BROWSER &amp; SERVER</text>
+<text x="54" y="221" font-family="Menlo,sans-serif" font-size="20" font-weight="700" fill="#192f36" letter-spacing="0">public/index.html</text>
+<text x="54" y="250" font-family="Arial,sans-serif" font-size="18" font-weight="400" fill="#192f36" letter-spacing="0">Screens and controls</text>
+<text x="339" y="221" font-family="Menlo,sans-serif" font-size="20" font-weight="700" fill="#192f36" letter-spacing="0">public/css/style.css</text>
+<text x="339" y="250" font-family="Arial,sans-serif" font-size="18" font-weight="400" fill="#192f36" letter-spacing="0">Layout and styling</text>
+<text x="643" y="221" font-family="Menlo,sans-serif" font-size="20" font-weight="700" fill="#192f36" letter-spacing="0">public/js/app.js</text>
+<text x="643" y="250" font-family="Arial,sans-serif" font-size="18" font-weight="400" fill="#192f36" letter-spacing="0">Cart, requests and UI updates</text>
+<path d="M954 224L1007 224" stroke="#377769" stroke-width="2"/>
+<path d="M1002 219l8 5 -8 5" fill="none" stroke="#377769" stroke-width="2"/>
+<text x="1032" y="221" font-family="Menlo,sans-serif" font-size="21" font-weight="700" fill="#192f36" letter-spacing="0">server.js</text>
+<text x="1032" y="250" font-family="Arial,sans-serif" font-size="18" font-weight="400" fill="#192f36" letter-spacing="0">Serves the UI and mounts /api.</text>
+<rect x="32" y="299" width="1376" height="172" rx="17" fill="#e8edf9" stroke="none"/>
+<text x="54" y="331" font-family="Arial,sans-serif" font-size="15" font-weight="700" fill="#3b5389" letter-spacing="1.4">EXPRESS ROUTERS   /   MOUNTED UNDER /api</text>
+<rect x="54" y="348" width="320" height="104" rx="10" fill="#ffffff" stroke="none"/>
+<text x="69" y="378" font-family="Menlo,sans-serif" font-size="19" font-weight="700" fill="#263c69" letter-spacing="0">routes/products.js</text>
+<text x="69" y="406" font-family="Arial,sans-serif" font-size="19" font-weight="700" fill="#192f36" letter-spacing="0">Catalog and coupons</text>
+<text x="69" y="431" font-family="Arial,sans-serif" font-size="17" font-weight="400" fill="#192f36" letter-spacing="0">List stock and promotions.</text>
+<rect x="392" y="348" width="320" height="104" rx="10" fill="#ffffff" stroke="none"/>
+<text x="407" y="378" font-family="Menlo,sans-serif" font-size="19" font-weight="700" fill="#263c69" letter-spacing="0">routes/orders.js</text>
+<text x="407" y="406" font-family="Arial,sans-serif" font-size="19" font-weight="700" fill="#192f36" letter-spacing="0">Order desk</text>
+<text x="407" y="431" font-family="Arial,sans-serif" font-size="17" font-weight="400" fill="#192f36" letter-spacing="0">Place, find and cancel orders.</text>
+<rect x="730" y="348" width="320" height="104" rx="10" fill="#ffffff" stroke="none"/>
+<text x="745" y="378" font-family="Menlo,sans-serif" font-size="19" font-weight="700" fill="#263c69" letter-spacing="0">routes/customers.js</text>
+<text x="745" y="406" font-family="Arial,sans-serif" font-size="19" font-weight="700" fill="#192f36" letter-spacing="0">Khata accounts</text>
+<text x="745" y="431" font-family="Arial,sans-serif" font-size="17" font-weight="400" fill="#192f36" letter-spacing="0">List balances and log payments.</text>
+<rect x="1068" y="348" width="320" height="104" rx="10" fill="#ffffff" stroke="none"/>
+<text x="1083" y="378" font-family="Menlo,sans-serif" font-size="19" font-weight="700" fill="#263c69" letter-spacing="0">routes/reports.js</text>
+<text x="1083" y="406" font-family="Arial,sans-serif" font-size="19" font-weight="700" fill="#192f36" letter-spacing="0">Reporting and previews</text>
+<text x="1083" y="431" font-family="Arial,sans-serif" font-size="17" font-weight="400" fill="#192f36" letter-spacing="0">Preview totals and audit GST.</text>
+<rect x="32" y="487" width="1376" height="217" rx="17" fill="#f3eddf" stroke="none"/>
+<text x="54" y="519" font-family="Arial,sans-serif" font-size="15" font-weight="700" fill="#72531b" letter-spacing="1.4">BUSINESS MODULES   /   lib/</text>
+<rect x="54" y="535" width="256" height="65" rx="8" fill="#fffefb" stroke="none"/>
+<text x="67" y="561" font-family="Menlo,sans-serif" font-size="19" font-weight="700" fill="#4d3b21" letter-spacing="0">orders.js</text>
+<text x="67" y="585" font-family="Arial,sans-serif" font-size="17" font-weight="400" fill="#192f36" letter-spacing="0">Order lifecycle</text>
+<rect x="324" y="535" width="256" height="65" rx="8" fill="#fffefb" stroke="none"/>
+<text x="337" y="561" font-family="Menlo,sans-serif" font-size="19" font-weight="700" fill="#4d3b21" letter-spacing="0">inventory.js</text>
+<text x="337" y="585" font-family="Arial,sans-serif" font-size="17" font-weight="400" fill="#192f36" letter-spacing="0">Sellable stock and holds</text>
+<rect x="594" y="535" width="256" height="65" rx="8" fill="#fffefb" stroke="none"/>
+<text x="607" y="561" font-family="Menlo,sans-serif" font-size="19" font-weight="700" fill="#4d3b21" letter-spacing="0">pricing.js</text>
+<text x="607" y="585" font-family="Arial,sans-serif" font-size="17" font-weight="400" fill="#192f36" letter-spacing="0">Discounted lines and totals</text>
+<rect x="864" y="535" width="256" height="65" rx="8" fill="#fffefb" stroke="none"/>
+<text x="877" y="561" font-family="Menlo,sans-serif" font-size="19" font-weight="700" fill="#4d3b21" letter-spacing="0">coupons.js</text>
+<text x="877" y="585" font-family="Arial,sans-serif" font-size="17" font-weight="400" fill="#192f36" letter-spacing="0">Eligibility and discount caps</text>
+<rect x="1134" y="535" width="256" height="65" rx="8" fill="#fffefb" stroke="none"/>
+<text x="1147" y="561" font-family="Menlo,sans-serif" font-size="19" font-weight="700" fill="#4d3b21" letter-spacing="0">tax.js</text>
+<text x="1147" y="585" font-family="Arial,sans-serif" font-size="17" font-weight="400" fill="#192f36" letter-spacing="0">HSN rates and GST split</text>
+<rect x="54" y="610" width="256" height="65" rx="8" fill="#fffefb" stroke="none"/>
+<text x="67" y="636" font-family="Menlo,sans-serif" font-size="19" font-weight="700" fill="#4d3b21" letter-spacing="0">ledger.js</text>
+<text x="67" y="660" font-family="Arial,sans-serif" font-size="17" font-weight="400" fill="#192f36" letter-spacing="0">Credit limits and payments</text>
+<rect x="324" y="610" width="256" height="65" rx="8" fill="#fffefb" stroke="none"/>
+<text x="337" y="636" font-family="Menlo,sans-serif" font-size="19" font-weight="700" fill="#4d3b21" letter-spacing="0">dates.js</text>
+<text x="337" y="660" font-family="Arial,sans-serif" font-size="17" font-weight="400" fill="#192f36" letter-spacing="0">Dates and fiscal years</text>
+<rect x="594" y="610" width="256" height="65" rx="8" fill="#fffefb" stroke="none"/>
+<text x="607" y="636" font-family="Menlo,sans-serif" font-size="19" font-weight="700" fill="#4d3b21" letter-spacing="0">invoice.js</text>
+<text x="607" y="660" font-family="Arial,sans-serif" font-size="17" font-weight="400" fill="#192f36" letter-spacing="0">Printable bill and GST rows</text>
+<rect x="864" y="610" width="256" height="65" rx="8" fill="#fffefb" stroke="none"/>
+<text x="877" y="636" font-family="Menlo,sans-serif" font-size="19" font-weight="700" fill="#4d3b21" letter-spacing="0">reports.js</text>
+<text x="877" y="660" font-family="Arial,sans-serif" font-size="17" font-weight="400" fill="#192f36" letter-spacing="0">Dashboard and GST audit</text>
+<rect x="1134" y="610" width="256" height="65" rx="8" fill="#fffefb" stroke="none"/>
+<text x="1147" y="636" font-family="Menlo,sans-serif" font-size="19" font-weight="700" fill="#4d3b21" letter-spacing="0">store.js</text>
+<text x="1147" y="660" font-family="Arial,sans-serif" font-size="17" font-weight="400" fill="#192f36" letter-spacing="0">JSON reads, writes and audit</text>
+<rect x="32" y="720" width="680" height="81" rx="12" fill="#e9eeea" stroke="none"/>
+<text x="54" y="752" font-family="Menlo,sans-serif" font-size="21" font-weight="700" fill="#192f36" letter-spacing="0">config.js</text>
+<text x="54" y="779" font-family="Arial,sans-serif" font-size="17" font-weight="400" fill="#192f36" letter-spacing="0">Shop settings, GST slabs, coupon rules and inventory defaults.</text>
+<rect x="728" y="720" width="680" height="81" rx="12" fill="#e9eeea" stroke="none"/>
+<text x="750" y="752" font-family="Menlo,sans-serif" font-size="21" font-weight="700" fill="#192f36" letter-spacing="0">data/db.json</text>
+<text x="750" y="779" font-family="Arial,sans-serif" font-size="17" font-weight="400" fill="#192f36" letter-spacing="0">Products, customers, orders, settlements and audit entries.</text>
+<rect x="32" y="818" width="1376" height="239" rx="18" fill="#102e32" stroke="none"/>
+<text x="55" y="852" font-family="Arial,sans-serif" font-size="15" font-weight="700" fill="#a1ecc0" letter-spacing="1.4">CHECKOUT SEQUENCE</text>
+<text x="1044" y="854" font-family="Menlo,sans-serif" font-size="22" font-weight="700" fill="#dcfce6" letter-spacing="0">POST /api/orders</text>
+<circle cx="71" cy="894" r="15" fill="#b0efbb"/>
+<text x="66" y="900" font-family="Arial,sans-serif" font-size="17" font-weight="700" fill="#153d35" letter-spacing="0">1</text>
+<path d="M95 894L264 894" stroke="#6da89c" stroke-width="2"/>
+<path d="M259 889l8 5 -8 5" fill="none" stroke="#6da89c" stroke-width="2"/>
+<text x="56" y="944" font-family="Arial,sans-serif" font-size="24" font-weight="700" fill="#ffffff" letter-spacing="0">Send cart</text>
+<text x="56" y="976" font-family="Arial,sans-serif" font-size="17" font-weight="400" fill="#d8eae6" letter-spacing="0">Browser submits items,</text>
+<text x="56" y="1002" font-family="Arial,sans-serif" font-size="17" font-weight="400" fill="#d8eae6" letter-spacing="0">payment and coupon.</text>
+<circle cx="296" cy="894" r="15" fill="#b0efbb"/>
+<text x="291" y="900" font-family="Arial,sans-serif" font-size="17" font-weight="700" fill="#153d35" letter-spacing="0">2</text>
+<path d="M320 894L489 894" stroke="#6da89c" stroke-width="2"/>
+<path d="M484 889l8 5 -8 5" fill="none" stroke="#6da89c" stroke-width="2"/>
+<text x="281" y="944" font-family="Arial,sans-serif" font-size="24" font-weight="700" fill="#ffffff" letter-spacing="0">Resolve items</text>
+<text x="281" y="976" font-family="Arial,sans-serif" font-size="17" font-weight="400" fill="#d8eae6" letter-spacing="0">Order router loads</text>
+<text x="281" y="1002" font-family="Arial,sans-serif" font-size="17" font-weight="400" fill="#d8eae6" letter-spacing="0">catalog prices and HSN.</text>
+<circle cx="521" cy="894" r="15" fill="#b0efbb"/>
+<text x="516" y="900" font-family="Arial,sans-serif" font-size="17" font-weight="700" fill="#153d35" letter-spacing="0">3</text>
+<path d="M545 894L714 894" stroke="#6da89c" stroke-width="2"/>
+<path d="M709 889l8 5 -8 5" fill="none" stroke="#6da89c" stroke-width="2"/>
+<text x="506" y="944" font-family="Arial,sans-serif" font-size="24" font-weight="700" fill="#ffffff" letter-spacing="0">Check stock</text>
+<text x="506" y="976" font-family="Arial,sans-serif" font-size="17" font-weight="400" fill="#d8eae6" letter-spacing="0">Inventory checks</text>
+<text x="506" y="1002" font-family="Arial,sans-serif" font-size="17" font-weight="400" fill="#d8eae6" letter-spacing="0">sellable quantities.</text>
+<circle cx="746" cy="894" r="15" fill="#b0efbb"/>
+<text x="741" y="900" font-family="Arial,sans-serif" font-size="17" font-weight="700" fill="#153d35" letter-spacing="0">4</text>
+<path d="M770 894L939 894" stroke="#6da89c" stroke-width="2"/>
+<path d="M934 889l8 5 -8 5" fill="none" stroke="#6da89c" stroke-width="2"/>
+<text x="731" y="944" font-family="Arial,sans-serif" font-size="24" font-weight="700" fill="#ffffff" letter-spacing="0">Price the sale</text>
+<text x="731" y="976" font-family="Arial,sans-serif" font-size="17" font-weight="400" fill="#d8eae6" letter-spacing="0">Apply coupon caps,</text>
+<text x="731" y="1002" font-family="Arial,sans-serif" font-size="17" font-weight="400" fill="#d8eae6" letter-spacing="0">then tax each line.</text>
+<circle cx="971" cy="894" r="15" fill="#b0efbb"/>
+<text x="966" y="900" font-family="Arial,sans-serif" font-size="17" font-weight="700" fill="#153d35" letter-spacing="0">5</text>
+<path d="M995 894L1164 894" stroke="#6da89c" stroke-width="2"/>
+<path d="M1159 889l8 5 -8 5" fill="none" stroke="#6da89c" stroke-width="2"/>
+<text x="956" y="944" font-family="Arial,sans-serif" font-size="24" font-weight="700" fill="#ffffff" letter-spacing="0">Record order</text>
+<text x="956" y="976" font-family="Arial,sans-serif" font-size="17" font-weight="400" fill="#d8eae6" letter-spacing="0">Charge Khata if used,</text>
+<text x="956" y="1002" font-family="Arial,sans-serif" font-size="17" font-weight="400" fill="#d8eae6" letter-spacing="0">deduct stock, add order.</text>
+<circle cx="1196" cy="894" r="15" fill="#b0efbb"/>
+<text x="1191" y="900" font-family="Arial,sans-serif" font-size="17" font-weight="700" fill="#153d35" letter-spacing="0">6</text>
+<text x="1181" y="944" font-family="Arial,sans-serif" font-size="24" font-weight="700" fill="#ffffff" letter-spacing="0">Save &amp; return</text>
+<text x="1181" y="976" font-family="Arial,sans-serif" font-size="17" font-weight="400" fill="#d8eae6" letter-spacing="0">Append audit, write JSON,</text>
+<text x="1181" y="1002" font-family="Arial,sans-serif" font-size="17" font-weight="400" fill="#d8eae6" letter-spacing="0">return HTTP 201.</text>
 </svg>
