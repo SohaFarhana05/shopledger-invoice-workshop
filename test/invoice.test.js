@@ -12,6 +12,11 @@ describe('test/invoice.test.js', () => {
     tax: 45.90
   };
 
+  it('order #1002 invoice agrees with the recorded GST and total', () => {
+    const { tax, total } = invoice.computeInvoiceFigures(discountedOrder);
+    assert.deepEqual({ tax, total }, { tax: discountedOrder.tax, total: discountedOrder.total });
+  });
+
   it('CURRENT BEHAVIOUR: SAVE10 discounts the tax-inclusive bill', () => {
     const figures = invoice.computeInvoiceFigures(discountedOrder);
     assert.equal(figures.subtotal, 1020);
