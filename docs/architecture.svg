@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="740" viewBox="0 0 1280 740" role="img" aria-labelledby="title desc">
+<title id="title">ShopLedger architecture and checkout flow</title>
+<desc id="desc">An order travels from the browser through Express to the order router, which coordinates pricing, credit, inventory, and persistence. Printing and audit use a separate invoice calculation.</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#25716a"/></marker></defs>
+<style>text{font-family:Arial,sans-serif;fill:#172f38}.title{font-size:36px;font-weight:700}.head{font-size:23px;font-weight:700}.body{font-size:18px}.minor{font-size:16px;fill:#425b65}.section{font-size:16px;letter-spacing:1.4px;fill:#21675f;font-weight:700}</style>
+<rect width="1280" height="740" fill="#f6f8f6"/>
+<text x="36" y="55" class="title">ShopLedger architecture</text>
+<text x="36" y="99" class="section">PLACE AN ORDER   /   POST /api/orders</text>
+<rect x="36" y="120" width="235" height="110" rx="12" fill="#fff" stroke="#a4bbb5"/>
+<text x="52" y="152" class="head">Browser UI</text>
+<text x="52" y="181" class="minor">public/index.html</text>
+<text x="52" y="205" class="minor">public/js/app.js sends cart</text>
+<rect x="312" y="120" width="208" height="110" rx="12" fill="#fff" stroke="#a4bbb5"/>
+<text x="328" y="152" class="head">server.js</text>
+<text x="328" y="181" class="minor">Serves public/</text>
+<text x="328" y="205" class="minor">Mounts routers at /api</text>
+<rect x="560" y="120" width="330" height="110" rx="12" fill="#e0f1e9" stroke="#a4bbb5"/>
+<text x="576" y="152" class="head">routes/orders.js</text>
+<text x="576" y="181" class="minor">Reads database and checks cart</text>
+<text x="576" y="205" class="minor">Coordinates checkout steps below</text>
+<rect x="930" y="120" width="314" height="110" rx="12" fill="#fff" stroke="#a4bbb5"/>
+<text x="946" y="152" class="head">lib/store.js</text>
+<text x="946" y="181" class="minor">Appends audit entry and writes</text>
+<text x="946" y="205" class="minor">data/db.json · returns to router</text>
+<path d="M271 175 L310 175" stroke="#25716a" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+<path d="M520 175 L558 175" stroke="#25716a" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+<path d="M890 175 L928 175" stroke="#25716a" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+<text x="36" y="281" class="section">CHECKOUT STEPS INSIDE THE ORDER ROUTER</text>
+<rect x="36" y="300" width="272" height="119" rx="12" fill="#fff" stroke="#a4bbb5"/>
+<text x="52" y="332" class="head">1   Validate</text>
+<text x="52" y="361" class="minor">lib/inventory.js checks stock</text>
+<text x="52" y="385" class="minor">lib/coupons.js validates code</text>
+<rect x="343" y="300" width="285" height="119" rx="12" fill="#fff" stroke="#a4bbb5"/>
+<text x="359" y="332" class="head">2   Price</text>
+<text x="359" y="361" class="minor">lib/pricing.js applies discount</text>
+<text x="359" y="385" class="minor">lib/tax.js resolves item GST</text>
+<rect x="663" y="300" width="255" height="119" rx="12" fill="#fff" stroke="#a4bbb5"/>
+<text x="679" y="332" class="head">3   Charge Khata</text>
+<text x="679" y="361" class="minor">lib/ledger.js checks credit</text>
+<text x="679" y="385" class="minor">and records a credit sale</text>
+<rect x="953" y="300" width="291" height="119" rx="12" fill="#fff" stroke="#a4bbb5"/>
+<text x="969" y="332" class="head">4   Record sale</text>
+<text x="969" y="361" class="minor">lib/inventory.js deducts stock</text>
+<text x="969" y="385" class="minor">lib/orders.js adds dated order</text>
+<path d="M308 360 L341 360" stroke="#25716a" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+<path d="M628 360 L661 360" stroke="#25716a" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+<path d="M918 360 L951 360" stroke="#25716a" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+<text x="36" y="450" class="body">Step 3 applies to Khata sales only. After step 4, the router saves via lib/store.js and returns HTTP 201 with the order.</text>
+<text x="36" y="510" class="section">OTHER REQUEST PATHS</text>
+<text x="817" y="510" class="section">SHARED MODULES AND DATA</text>
+<text x="36" y="550" class="body">routes/products.js</text>
+<text x="260" y="550" class="minor">Catalog, stock and coupons</text>
+<path d="M36 563H772" stroke="#d2dfdb"/>
+<text x="36" y="593" class="body">routes/customers.js</text>
+<text x="260" y="593" class="minor">Khata accounts and settlements</text>
+<path d="M36 606H772" stroke="#d2dfdb"/>
+<text x="36" y="636" class="body">routes/reports.js</text>
+<text x="260" y="636" class="minor">Cart preview, dashboard and GST audit</text>
+<path d="M36 649H772" stroke="#d2dfdb"/>
+<text x="36" y="679" class="body">GET /orders/:id/invoice</text>
+<text x="260" y="679" class="minor">server.js loads the order and calls lib/invoice.js</text>
+<path d="M36 692H772" stroke="#d2dfdb"/>
+<text x="817" y="543" class="body">config.js</text>
+<text x="817" y="563" class="minor">Tax slabs, coupons and shop settings</text>
+<text x="817" y="591" class="body">lib/dates.js</text>
+<text x="817" y="611" class="minor">Dates for orders and ledger entries</text>
+<text x="817" y="639" class="body">lib/reports.js</text>
+<text x="817" y="659" class="minor">Compares invoice and saved order figures</text>
+<text x="817" y="687" class="body">data/db.json</text>
+<text x="817" y="707" class="minor">Products, orders, accounts and audit log</text>
+</svg>
